@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import domain.entity.Member;
+import exception.ColumnNotFoundException;
 
 @Component
 public class MemberDao {
@@ -37,6 +38,16 @@ public class MemberDao {
 	public Member getById(int id) {
 		String sql = "select * from member where id = ?";
 		return jdbcTemplate.query(sql, new MemberMapper(), id).get(0);
+	}
+	
+	public boolean isExist(long id) {
+		String sql = "select 1 from member where id = ?";
+		try {
+			int result = jdbcTemplate.queryForObject(sql, Integer.class, id);
+			return result == 1?true:false;
+		}catch(RuntimeException e) {
+			throw new ColumnNotFoundException();
+		}
 	}
 	
 	public class MemberMapper implements RowMapper<Member>{

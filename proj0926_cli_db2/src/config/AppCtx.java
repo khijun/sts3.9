@@ -9,7 +9,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@ComponentScan(basePackages = {"dbquery"})
+@ComponentScan(basePackages = {"dbquery", "service"})
 @EnableTransactionManagement
 public class AppCtx {
 

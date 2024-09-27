@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import domain.entity.Item;
+import exception.ColumnNotFoundException;
 
 @Component
 public class ItemDao {
@@ -43,9 +44,19 @@ public class ItemDao {
 		});
 	}
 	
-	public Item getById(int id) {
+	public Item getById(long id) {
 		String sql = "select * from item where id = ?";
 		return jdbcTemplate.query(sql, new ItemMapper(), id).get(0);
+	}
+	
+	public boolean isExist(long id) {
+		String sql = "select 1 from item where id = ?";
+		try {
+			int result = jdbcTemplate.queryForObject(sql, Integer.class, id);
+			return result == 1?true:false;
+		}catch(RuntimeException e) {
+			throw new ColumnNotFoundException();
+		}
 	}
 	
 	public class ItemMapper implements RowMapper<Item>{
